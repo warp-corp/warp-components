@@ -1,0 +1,88 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+<polymer-element name="warp-game-status" attributes="endpoint interval">
+  <template>
+    <link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host #status'; }
+      ::content #status {
+        font-size: 120%;
+        margin-left: 5px;
+      }
+      polyfill-next-selector { content: ':host #status.online'; }
+      ::content #status.online {
+        color: #3c763d;
+      }
+      polyfill-next-selector { content: ':host #status.offline'; }
+      ::content #status.offline {
+        color: #a94442;
+      }
+      polyfill-next-selector { content: ':host .stat-label'; }
+      ::content .stat-label {
+        text-transform: capitalize;
+      }
+    </style>
+    <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          Warp - Server Status
+          <span id="status" class="{{status}} form-control-static">&#9679;</span>
+      </h3>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form">
+          <div>
+            <label for="endpoint" class="col-sm-5 control-label">Endpoint</label>
+            <div class="col-sm-6">
+              <p id="endpoint" class="form-control-static">{{endpoint}}</p>
+            </div>
+          </div>
+          <template repeat="{{s in stats}}">
+            <div>
+              <label class="col-sm-5 control-label stat-label">{{s.k}}</label>
+              <div class="col-sm-7">
+                <p class="form-control-static">{{s.v}}</p>
+              </div>
+            </div>
+          </template>
+        </form>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      endpoint: '',
+      status: 'offline',
+      interval: 60*10*1000, // Toutes les 10min
+
+      ready: function() {
+        this.stats = [];
+        setInterval(this.fetchStats.bind(this), this.interval);
+      },
+
+      endpointChanged: function() {
+        this.fetchStats();
+      },
+
+      fetchStats: function() {
+        var self = this;
+        this.$.api.getGameStatus(function(err, res) {
+          if(res) {
+            self.status = 'online';
+            self.stats = Object.keys(res.stats).map(function(key) {
+              return {k: key, v: res.stats[key]};
+            });
+          } else {
+            self.status = 'offline';
+          }
+        });
+      }
+
+    });
+  </script>
+</polymer-element>

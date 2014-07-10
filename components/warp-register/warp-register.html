@@ -1,0 +1,88 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+<polymer-element name="warp-register" attributes="endpoint">
+  <template>
+    <link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+
+    </style>
+    <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Warp - Register</h3>
+      </div>
+      <div class="panel-body">
+        <div
+          class="alert {{ {hidden: alert.hidden} | tokenList }} alert-{{alert.type}}"
+          role="alert">
+          {{alert.message}}
+        </div>
+        <form role="form" class="{{ {hidden: !alert.hidden} | tokenList }}">
+          <div class="form-group">
+            <label for="nicknameInput">Nickname</label>
+            <input type="text" class="form-control" id="nicknameInput" value="{{nickname}}">
+          </div>
+          <div class="form-group">
+            <label for="emailInput">Email address</label>
+            <input type="email" class="form-control" id="emailInput" value="{{email}}">
+          </div>
+          <div class="form-group">
+            <label for="password1Input">Password</label>
+            <input type="password" class="form-control" id="password1Input" value="{{password1}}">
+          </div>
+          <div class="form-group">
+            <label for="password2Input">Confirm password</label>
+            <input type="password" class="form-control" id="password2Input" value="{{password2}}">
+          </div>
+        </form>
+        <button id="register"
+          class="btn btn-primary btn-block {{ {hidden: !alert.hidden} | tokenList }}"
+          on-click="{{registerClickHandler}}">
+            Register
+        </button>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      endpoint: '',
+
+      nickname: '',
+      email: '',
+      password1: '',
+      password2: '',
+
+      ready: function() {
+        this.alert = {
+          hidden: true,
+          type: 'success',
+          message: ''
+        };
+      },
+
+      registerClickHandler: function() {
+        var self = this;
+        this.$.api.register(this.nickname, this.email, this.password1, function(err, res) {
+          if(res.error) {
+            self.alert.type = 'danger';
+            self.alert.message = res.error.message;
+          } else {
+            self.alert.type = 'success';
+            self.alert.message = 'Account created !';
+          }
+          self.alert.hidden = false;
+        });
+      }
+
+    });
+  </script>
+</polymer-element>

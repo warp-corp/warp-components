@@ -1,0 +1,27 @@
+{
+  "name": "warp-client",
+  "version": "0.0.0",
+  "authors": [
+    "Bornholm <bornholm@ptitcloud.fr>"
+  ],
+  "description": "Client pour le jeu Warp",
+  "main": "index.html",
+  "keywords": [
+    "warp",
+    "game"
+  ],
+  "license": "GPL",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "~0.3.3",
+    "bootstrap": "~3.2.0",
+    "core-ajax": "Polymer/core-ajax#~0.3.3"
+  }
+}

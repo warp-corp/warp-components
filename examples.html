@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <script type="text/javascript" src="bower_components/platform/platform.js"></script>
+    <!-- Import des composants -->
+    <link rel="import" href="./components/">
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body unresolved>
+    <div class="container">
+      <div class="row">
+        <warp-game-status endpoint="http://172.30.102.87:8080" class="col-md-4"></warp-game-status>
+        <warp-register endpoint="http://172.30.102.87:8080" class="col-md-4"></warp-register>
+        <warp-login endpoint="http://172.30.102.87:8080" class="col-md-4"></warp-login>
+      </div>
+    </div>
+  </body>
+</html>

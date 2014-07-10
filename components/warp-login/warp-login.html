@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+<polymer-element name="warp-login" attributes="endpoint">
+  <template>
+    <link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Warp - Login</h3>
+      </div>
+      <div class="panel-body">
+        <form role="form">
+          <div class="form-group">
+            <label for="nicknameInput">Nickname</label>
+            <input type="text" class="form-control" id="nicknameInput" value="{{nickname}}">
+          </div>
+          <div class="form-group">
+            <label for="passwordInput">Password</label>
+            <input type="text" class="form-control" id="passwordInput" value="{{password}}">
+          </div>
+        </form>
+        <button id="register"
+          class="btn btn-primary btn-block | tokenList }}"
+          on-click="{{loginClickHandler}}">
+          Login
+        </button>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      nickname: '',
+      password: '',
+
+      loginClickHandler: function() {
+        var self = this;
+        this.$.api.login(this.nickname, this.password, function(err, res) {
+          console.log(res)
+        });
+      },
+
+    });
+  </script>
+</polymer-element>

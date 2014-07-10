@@ -1,0 +1,91 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-ajax/core-xhr.html">
+<polymer-element name="warp-api" attributes="endpoint">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+    <core-xhr id="xhr"></core-xhr>
+  </template>
+  <script>
+    (function() {
+
+      var _password;
+      var _name;
+
+      Polymer({
+
+        endpoint: '',
+        
+        register: function(name, email, password, cb) {
+          var opts = {
+            service: '/account',
+            data: {
+              name: name,
+              email: email,
+              password: password
+            }
+          };
+          this._post(opts, cb.bind(null, null));
+          return this;
+        },
+
+        login: function(name, password, cb) {
+          _name = name;
+          _password = password;
+          this._get({service: '/account'}, function(res, xhr) {
+            if(res && !'error' in res) {
+              return cb(null, res);
+            } else {
+              _name = null;
+              _password = null;
+              return cb(res.error)
+            }
+          });
+          return this;
+        },
+
+        getGameStatus: function(cb) {
+          this._get({service: '/'}, cb.bind(null, null));
+          return this;
+        },
+
+        _post: function(opts, cb) {
+          opts = opts || {};
+          opts.method = 'POST';
+          return this._send(opts, cb);
+        },
+
+        _get: function(opts, cb) {
+          opts = opts || {};
+          opts.method = 'GET';
+          return this._send(opts, cb);
+        },
+
+        _send: function(opts, cb) {
+          cb = arguments[arguments.length-1];
+          opts = opts || {};
+          opts.headers = opts.headers || {}
+          opts.headers['Content-Type'] = 'application/json';
+          opts.headers['Authorization'] = 'Basic ' + btoa(_name + ':' + _password);
+          if(!opts.method || opts.method.toLowerCase() === 'get') {
+            opts.params = opts.data;
+          } else {
+            opts.body = JSON.stringify(opts.data);
+          }
+          opts.url = this.endpoint + opts.service;
+          opts.responseType = 'json';
+          opts.callback = cb;
+          this.$.xhr.request(opts);
+          return this;
+        }
+
+
+      });
+
+    }())
+    
+  </script>
+</polymer-element>
