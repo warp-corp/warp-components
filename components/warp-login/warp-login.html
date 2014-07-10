@@ -7,27 +7,36 @@
       :host {
         display: block;
       }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
     </style>
     <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Warp - Login</h3>
+        <h3 class="panel-title">Warp - Identification</h3>
       </div>
       <div class="panel-body">
-        <form role="form">
+        <form role="form" class="{{ {hidden: loggedIn} | tokenList }}">
           <div class="form-group">
-            <label for="nicknameInput">Nickname</label>
-            <input type="text" class="form-control" id="nicknameInput" value="{{nickname}}">
+            <label for="nameInput">Identifiant</label>
+            <input type="text" class="form-control" id="nameInput" value="{{name}}">
           </div>
           <div class="form-group">
-            <label for="passwordInput">Password</label>
-            <input type="text" class="form-control" id="passwordInput" value="{{password}}">
+            <label for="passwordInput">Mot de passe</label>
+            <input type="password" class="form-control" id="passwordInput" value="{{password}}">
           </div>
         </form>
-        <button id="register"
-          class="btn btn-primary btn-block | tokenList }}"
+        <button id="login"
+          class="btn btn-primary btn-block {{ {hidden: loggedIn} | tokenList }}"
           on-click="{{loginClickHandler}}">
-          Login
+          Se connecter
+        </button>
+        <button id="logout"
+          class="btn btn-danger btn-block {{ {hidden: !loggedIn} | tokenList }}"
+          on-click="{{logoutClickHandler}}">
+          Se déconnecter
         </button>
       </div>
     </div>
@@ -35,14 +44,24 @@
   <script>
     Polymer({
 
-      nickname: '',
+      loggedIn: false,
+      name: '',
       password: '',
+
+      ready: function() {
+        this.loggedIn = this.$.api.isLoggedIn();
+      },
 
       loginClickHandler: function() {
         var self = this;
-        this.$.api.login(this.nickname, this.password, function(err, res) {
-          console.log(res)
+        this.$.api.login(this.name, this.password, function(err, res) {
+          self.loggedIn = self.$.api.isLoggedIn();
         });
+      },
+
+      logoutClickHandler: function() {
+        this.$.api.logout();
+        this.loggedIn = this.$.api.isLoggedIn();
       },
 
     });

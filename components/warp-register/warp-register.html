@@ -17,7 +17,7 @@
     <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title">Warp - Register</h3>
+        <h3 class="panel-title">Warp - Créer un compte</h3>
       </div>
       <div class="panel-body">
         <div
@@ -27,26 +27,26 @@
         </div>
         <form role="form" class="{{ {hidden: !alert.hidden} | tokenList }}">
           <div class="form-group">
-            <label for="nicknameInput">Nickname</label>
+            <label for="nicknameInput">Identifiant</label>
             <input type="text" class="form-control" id="nicknameInput" value="{{nickname}}">
           </div>
           <div class="form-group">
-            <label for="emailInput">Email address</label>
+            <label for="emailInput">Adresse courriel</label>
             <input type="email" class="form-control" id="emailInput" value="{{email}}">
           </div>
           <div class="form-group">
-            <label for="password1Input">Password</label>
+            <label for="password1Input">Mot de passe</label>
             <input type="password" class="form-control" id="password1Input" value="{{password1}}">
           </div>
           <div class="form-group">
-            <label for="password2Input">Confirm password</label>
+            <label for="password2Input">Confirmation du mot de passe</label>
             <input type="password" class="form-control" id="password2Input" value="{{password2}}">
           </div>
         </form>
         <button id="register"
           class="btn btn-primary btn-block {{ {hidden: !alert.hidden} | tokenList }}"
           on-click="{{registerClickHandler}}">
-            Register
+            S'enregistrer
         </button>
       </div>
     </div>

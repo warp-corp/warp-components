@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <script type="text/javascript" src="bower_components/platform/platform.js"></script>
+    <!-- Import des composants -->
+    <link rel="import" href="bower_components/polymer/polymer.html">
+    <link rel="import" href="./components/">
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  </head>
+  <body unresolved>
+    <div class="container">
+      <template id="main" is="auto-binding">
+        <div class="row">
+          <div class="col-md-12">
+            <form role="form">
+              <div class="form-group">
+                <label for="endpointInput">URL du serveur</label>
+                <input type="text" class="form-control" id="endpointInput" value="{{endpoint}}" />
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="row">
+          <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
+          <warp-register endpoint="{{endpoint}}" class="col-md-4"></warp-register>
+          <warp-login endpoint="{{endpoint}}" class="col-md-4"></warp-login>
+        </div>
+      </template>
+    </div>
+    <script type="text/javascript">
+    (function() {
+      var main = document.getElementById('main');
+      main.endpoint = 'http://localhost:8080';
+    }())
+    </script>
+  </body>
+</html>

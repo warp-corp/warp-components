@@ -18,7 +18,7 @@
       Polymer({
 
         endpoint: '',
-        
+
         register: function(name, email, password, cb) {
           var opts = {
             service: '/account',
@@ -32,15 +32,27 @@
           return this;
         },
 
+        isLoggedIn: function() {
+          return (_password && _name);
+        },
+
+        logout: function() {
+          _name = null;
+          _password = null;
+          this.asyncFire('warp-logout');
+          return this;
+        },
+
         login: function(name, password, cb) {
           _name = name;
           _password = password;
-          this._get({service: '/account'}, function(res, xhr) {
-            if(res && !'error' in res) {
+          var self = this;
+          this._get({service: '/account'}, function(res) {
+            if(res && !('error' in res)) {
+              self.asyncFire('warp-login');
               return cb(null, res);
             } else {
-              _name = null;
-              _password = null;
+              self.logout();
               return cb(res.error)
             }
           });
@@ -86,6 +98,6 @@
       });
 
     }())
-    
+
   </script>
 </polymer-element>
