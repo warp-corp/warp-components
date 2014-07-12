@@ -22,9 +22,12 @@
 	      <div class="panel-body">
 	        <form class="form-horizontal" role="form">
               <div class="row">
-	              <label class="col-sm-5 control-label stat-label">Integrity</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{integrity}}% &nbsp;&nbsp;&nbsp;<span class="text-muted right"> {{ hp }} / {{ maxHP }}</span></p>
+	              <div class="col-sm-12">
+	              	<div class="progress">
+									  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{integrity}}" aria-valuemin="0" aria-valuemax="100" style="width: {{integrity}}%">
+									    HP {{integrity}}%
+									  </div>
+									</div>
 	              </div>
 	            </div>
 	            <div class="row">
