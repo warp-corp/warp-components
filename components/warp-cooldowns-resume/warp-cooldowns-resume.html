@@ -43,7 +43,7 @@
     Polymer({
     	
     	endpoint: '',
-      interval: 4*1000, // Toutes les 10min
+      interval: 1*1000, // Toutes les 10min
 
       // bot stats
       CDs: [],
@@ -54,10 +54,17 @@
 
       fetchCD: function() {
         var self = this;
+        var today = new Date();
+
         this.$.api.getResumeBot(function(err, res) {
+        	
         	if(res) {
             self.CDs = Object.keys(res.cooldowns).map(function(key) {
-              return {k: key, v: res.cooldowns[key]};
+            	var timeCD = new Date(res.cooldowns[key].next_time_available);
+            	if (timeCD.getTime() > today.getTime()) {
+            		console.log("Ne peut pas effectuer l'action: " + res.cooldowns[key].action);
+            		return {k: key, v: res.cooldowns[key]};
+            	}
             });
           }
       	});
