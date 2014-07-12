@@ -9,7 +9,9 @@
   </head>
   <body unresolved>
     <div class="container">
-
+      <div class="page-header">
+        <h1>Warp Corporation</h1>
+      </div>
       <!--
         Composant utilitaire Polymer, permet d'utiliser
         le data-binding sans avoir à créer de nouveau
@@ -25,7 +27,6 @@
           <!-- Affiché si l'utilisateur est connecté -->
           <warp-loggedin class="col-md-12">
             <div class="row">
-
               <warp-bot-resume endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-bot-resume>
             </div>
           </warp-loggedin>

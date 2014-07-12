@@ -66,6 +66,19 @@
 	                <p class="form-control-static">{{maxCargo}}</p>
 	              </div>
 	            </div>
+	            <hr>
+		          <div class="row">
+		            <label class="col-sm-5 control-label stat-label">Position</label>
+		            <div class="col-sm-7">
+		              <p class="form-control-static">[{{secteur.x}} , {{secteur.y}}]</p>
+		            </div>
+		          </div>
+		          <div class="row">
+		            <label class="col-sm-5 control-label stat-label">Type secteur</label>
+		            <div class="col-sm-7">
+		              <p class="form-control-static">{{secteur.type}}</p>
+		            </div>
+		          </div>
 	        </form>
 	      </div>
 	    </div>
@@ -86,6 +99,11 @@
       armory: 0,
       maxSlots: 0,
       maxCargo: 0,
+      secteur: {
+      	x: -1,
+      	y: -1,
+      	type: 'portal'
+      },
 
     	ready: function() {
         setInterval(this.fetchStatsBot.bind(this), this.interval);
@@ -104,6 +122,10 @@
             self.armory = res.armoring;
             self.maxSlots = res.max_slots;
             self.maxCargo = res.max_cargo;
+
+            self.secteur.x = res.sector.x;
+            self.secteur.y = res.sector.y;
+            self.secteur.type = res.sector.type;
           }
       	});
       }
