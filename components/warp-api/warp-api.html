@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-ajax/core-xhr.html">
+<link rel="import" href="../../bower_components/core-signals/core-signals.html">
 <polymer-element name="warp-api" attributes="endpoint">
   <template>
     <style>
@@ -8,6 +9,10 @@
       }
     </style>
     <core-xhr id="xhr"></core-xhr>
+    <core-signals id="signals"
+      on-core-signal-warp-login="{{_loginSignalHandler}}"
+      on-core-signal-warp-logout="{{_logoutSignalHandler}}">
+    </core-signals>
   </template>
   <script>
     (function() {
@@ -39,7 +44,8 @@
         logout: function() {
           _name = null;
           _password = null;
-          this.asyncFire('warp-logout');
+          this.fire('warp-logout');
+          this.fire('core-signal', {name: 'warp-logout'});
           return this;
         },
 
@@ -49,7 +55,14 @@
           var self = this;
           this._get({service: '/account'}, function(res) {
             if(res && !('error' in res)) {
-              self.asyncFire('warp-login');
+              self.fire('warp-login');
+              self.fire('core-signal', {
+                name: 'warp-login',
+                data: {
+                  name: name,
+                  password: password
+                }
+              });
               return cb(null, res);
             } else {
               self.logout();
@@ -92,8 +105,19 @@
           opts.callback = cb;
           this.$.xhr.request(opts);
           return this;
-        }
+        },
 
+        _loginSignalHandler: function(evt, data) {
+          _name = data.name;
+          _password = data.password;
+          this.fire('warp-login');
+        },
+
+        _logoutSignalHandler: function() {
+          _name = null;
+          _password = null;
+          this.fire('warp-logout');
+        }
 
       });
 

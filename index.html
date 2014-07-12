@@ -8,29 +8,61 @@
   </head>
   <body unresolved>
     <div class="container">
+
+      <!--
+        Composant utilitaire Polymer, permet d'utiliser
+        le data-binding sans avoir à créer de nouveau
+        composant.
+      -->
       <template id="main" is="auto-binding">
-        <div class="row">
-          <div class="col-md-12">
-            <form role="form">
-              <div class="form-group">
-                <label for="endpointInput">URL du serveur</label>
-                <input type="text" class="form-control" id="endpointInput" value="{{endpoint}}" />
+        <!--
+          Composant utilitaire permettant d'afficher ou non certaines
+          parties de l'UI suivant l'état d'identification de l'utilisateur
+        -->
+        <warp-container endpoint="{{endpoint}}" class="row">
+
+          <!-- Affiché si l'utilisateur est connecté -->
+          <warp-loggedin class="col-md-12">
+            <div class="row">
+              <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
+            </div>
+          </warp-loggedin>
+
+          <!-- Affiché si l'utilisateur n'est pas connecté -->
+          <warp-loggedout class="col-md-12">
+
+            <div class="row">
+              <div class="col-md-12">
+                <form role="form">
+                  <div class="form-group">
+                    <label for="endpointInput">URL du serveur</label>
+                    <input type="text" class="form-control" id="endpointInput" value="{{endpoint}}" />
+                  </div>
+                </form>
               </div>
-            </form>
-          </div>
-        </div>
-        <div class="row">
-          <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
-          <warp-register endpoint="{{endpoint}}" class="col-md-4"></warp-register>
-          <warp-login endpoint="{{endpoint}}" class="col-md-4"></warp-login>
-        </div>
+            </div>
+
+            <div class="row">
+              <!-- Formulaire de login -->
+              <warp-login endpoint="{{endpoint}}" class="col-md-offset-2 col-md-4"></warp-login>
+              <!-- Formulaire de création de compte -->
+              <warp-register endpoint="{{endpoint}}" class="col-md-4"></warp-register>
+            </div>
+
+          </warp-loggedout>
+
+        </warp-container>
+
       </template>
     </div>
+
     <script type="text/javascript">
-    (function() {
-      var main = document.getElementById('main');
-      main.endpoint = 'http://localhost:8080';
-    }())
+      (function() {
+        var main = document.getElementById('main');
+        // Permet d'injecter l'URL du serveur à tous les composants de l'UI via data-binding
+        main.endpoint = 'http://localhost:8080';
+      }())
     </script>
+
   </body>
 </html>

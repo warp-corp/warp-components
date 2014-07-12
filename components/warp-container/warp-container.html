@@ -1,23 +1,23 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../warp-api/warp-api.html">
-<polymer-element name="warp-login-curtain" attributes="endpoint">
+<polymer-element name="warp-container" attributes="endpoint">
   <template>
     <link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <style>
       :host {
         display: block;
       }
-      polyfill-next-selector { content: ':host .hidden'; }
-      ::content .hidden {
+      polyfill-next-selector { content: ':host > .hidden'; }
+      ::content > .hidden {
         display: none;
       }
     </style>
     <warp-api id="api" endpoint="{{endpoint}}"></warp-api>
     <div class="{{ {hidden: !loggedIn} | tokenList }}">
-      <content select="*"></content>
+      <content select="warp-loggedin"></content>
     </div>
-    <div class="alert alert-warning {{ {hidden: loggedIn} | tokenList }}">
-      <p>Vous devez vous connecter avant d'accéder à ces informations.</p>
+    <div class="{{ {hidden: loggedIn} | tokenList }}">
+      <content select="warp-loggedout"></content>
     </div>
   </template>
   <script>
@@ -43,4 +43,24 @@
 
     });
   </script>
+</polymer-element>
+<polymer-element name="warp-loggedin" noscript>
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <content select="*"></content>
+  </template>
+</polymer-element>
+<polymer-element name="warp-loggedout" noscript>
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <content select="*"></content>
+  </template>
 </polymer-element>
