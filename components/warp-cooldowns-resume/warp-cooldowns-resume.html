@@ -23,15 +23,13 @@
         <form class="form-horizontal" role="form">
           <template repeat="{{s in CDs}}">
             <div class="row">
-              <label class="col-sm-5 control-label stat-label">Action</label>
-              <div class="col-sm-7">
-                <p class="form-control-static">{{s.v.action}}</p>
-              </div>
-            </div>
-            <div class="row">
-              <label class="col-sm-5 control-label stat-label">End cooldown</label>
-              <div class="col-sm-7">
-                <p class="form-control-static">{{s.v.next_time_available}}</p>
+              <div class="col-sm-12">
+                {{s.k}}
+                <div class="progress">
+                  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{s.v}}" aria-valuemin="0" aria-valuemax="60" style="width: {{s.v}}%">
+                  {{s.p}}
+                  </div>
+                </div>
               </div>
             </div>
           </template>
@@ -43,7 +41,7 @@
     Polymer({
     	
     	endpoint: '',
-      interval: 1*1000, // Toutes les 10min
+      interval: 1000, // Toutes les 10min
 
       // bot stats
       CDs: [],
@@ -60,10 +58,13 @@
         	
         	if(res) {
             self.CDs = Object.keys(res.cooldowns).map(function(key) {
-            	var timeCD = new Date(res.cooldowns[key].next_time_available);
-            	if (timeCD.getTime() > today.getTime()) {
-            		console.log("Ne peut pas effectuer l'action: " + res.cooldowns[key].action);
-            		return {k: key, v: res.cooldowns[key]};
+            	var timeEndCD = new Date(res.cooldowns[key].next_time_available);
+              var totalTime = ((timeEndCD.getTime() - today.getTime()) > 0) ? timeEndCD.getTime() - today.getTime() : 0;
+            	if (totalTime > 0) {
+                var percent = ((totalTime / 60000) * 100).toFixed(0);
+                var time_left = (totalTime / 1000).toFixed(0) + 's';
+                
+            		return {k: res.cooldowns[key].action, v: percent, p: time_left};
             	}
             });
           }
