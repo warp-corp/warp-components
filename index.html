@@ -5,6 +5,7 @@
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="./components/">
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/font-awesome.min.css">
   </head>
   <body unresolved>
     <div class="container">
@@ -20,10 +21,10 @@
           </div>
         </div>
         <div class="row">
-          <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
+          <warp-game-status endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-game-status>
           <warp-register endpoint="{{endpoint}}" class="col-md-4"></warp-register>
           <warp-login endpoint="{{endpoint}}" class="col-md-4"></warp-login>
-          <warp-bot-resume endpoint="{{endpoint}}" class="col-md-4"></warp-bot-resume>
+          <warp-bot-resume endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-bot-resume>
         </div>
       </template>
     </div>

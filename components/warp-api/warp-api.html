@@ -64,6 +64,11 @@
           return this;
         },
 
+        getResumeBot: function(cb) {
+          this._get({service: '/bot'}, cb.bind(null, null));
+          return this;
+        },
+
         _post: function(opts, cb) {
           opts = opts || {};
           opts.method = 'POST';
