@@ -5,6 +5,7 @@
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="./components/">
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="public/css/font-awesome.min.css">
   </head>
   <body unresolved>
     <div class="container">
@@ -24,7 +25,8 @@
           <!-- Affiché si l'utilisateur est connecté -->
           <warp-loggedin class="col-md-12">
             <div class="row">
-              <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
+
+              <warp-bot-resume endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-bot-resume>
             </div>
           </warp-loggedin>
 
@@ -43,8 +45,9 @@
             </div>
 
             <div class="row">
+              <warp-game-status endpoint="{{endpoint}}" class="col-md-4"></warp-game-status>
               <!-- Formulaire de login -->
-              <warp-login endpoint="{{endpoint}}" class="col-md-offset-2 col-md-4"></warp-login>
+              <warp-login endpoint="{{endpoint}}" class="col-md-4"></warp-login>
               <!-- Formulaire de création de compte -->
               <warp-register endpoint="{{endpoint}}" class="col-md-4"></warp-register>
             </div>
@@ -52,7 +55,6 @@
           </warp-loggedout>
 
         </warp-container>
-
       </template>
     </div>
 

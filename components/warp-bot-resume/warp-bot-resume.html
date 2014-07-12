@@ -1,0 +1,109 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-bot-resume" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+
+		<div class="panel panel-default">
+	      <div class="panel-heading">
+	        <h3 class="panel-title"><i class="fa fa-cog"></i> Bot resume</h3>
+	      </div>
+	      <div class="panel-body">
+	        <form class="form-horizontal" role="form">
+              <div class="row">
+	              <label class="col-sm-5 control-label stat-label">Integrity</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{integrity}}% &nbsp;&nbsp;&nbsp;<span class="text-muted right"> {{ hp }} / {{ maxHP }}</span></p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">Armure</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{armory}}</p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">Max. actions</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{maxActions}}</p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">CPUs</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{cpus}}</p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">RAM</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{ram}}Mo</p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">Max. slots</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{maxSlots}}</p>
+	              </div>
+	            </div>
+	            <div class="row">
+	              <label class="col-sm-5 control-label stat-label">Max. cargo</label>
+	              <div class="col-sm-7">
+	                <p class="form-control-static">{{maxCargo}}</p>
+	              </div>
+	            </div>
+	        </form>
+	      </div>
+	    </div>
+	</template>
+	<script>
+    Polymer({
+    	
+    	endpoint: '',
+      interval: 4*1000, // Toutes les 10min
+
+      // bot stats
+      integrity: 0,
+      maxActions: 0,
+      cpus: 0,
+      hp: 0,
+      maxHP: 0,
+      ram: 0,
+      armory: 0,
+      maxSlots: 0,
+      maxCargo: 0,
+
+    	ready: function() {
+        setInterval(this.fetchStatsBot.bind(this), this.interval);
+      },
+
+      fetchStatsBot: function() {
+        var self = this;
+        this.$.api.getResumeBot(function(err, res) {
+        	if(res) {
+            self.integrity = res.integrity;
+            self.maxActions = res.max_actions;
+            self.cpus = res.cpus;
+            self.hp = res.hp;
+            self.maxHP = res.max_hp;
+            self.ram = res.ram;
+            self.armory = res.armoring;
+            self.maxSlots = res.max_slots;
+            self.maxCargo = res.max_cargo;
+          }
+      	});
+      }
+    });
+  </script>
+</polymer-element>
