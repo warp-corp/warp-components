@@ -1,0 +1,67 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-cooldowns-resume" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+
+		<div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-clock-o"></i> Cooldowns</h3>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form">
+          <template repeat="{{s in CDs}}">
+            <div class="row">
+              <label class="col-sm-5 control-label stat-label">Action</label>
+              <div class="col-sm-7">
+                <p class="form-control-static">{{s.v.action}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-sm-5 control-label stat-label">End cooldown</label>
+              <div class="col-sm-7">
+                <p class="form-control-static">{{s.v.next_time_available}}</p>
+              </div>
+            </div>
+          </template>
+        </form>
+      </div>
+    </div>
+	</template>
+	<script>
+    Polymer({
+    	
+    	endpoint: '',
+      interval: 4*1000, // Toutes les 10min
+
+      // bot stats
+      CDs: [],
+
+    	ready: function() {
+        setInterval(this.fetchCD.bind(this), this.interval);
+      },
+
+      fetchCD: function() {
+        var self = this;
+        this.$.api.getResumeBot(function(err, res) {
+        	if(res) {
+            self.CDs = Object.keys(res.cooldowns).map(function(key) {
+              return {k: key, v: res.cooldowns[key]};
+            });
+          }
+      	});
+      }
+    });
+  </script>
+</polymer-element>
