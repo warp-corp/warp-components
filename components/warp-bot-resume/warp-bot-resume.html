@@ -1,0 +1,27 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/core-ajax/core-xhr.html">
+
+<polymer-element name="warp-bot-resume" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+
+		<div class="panel panel-default">
+	      <div class="panel-heading">
+	        <h3 class="panel-title">Warp - Bot resume</h3>
+	      </div>
+	      <div class="panel-body">
+	        
+	      </div>
+	    </div>
+	</template>
+</polymer-element>
