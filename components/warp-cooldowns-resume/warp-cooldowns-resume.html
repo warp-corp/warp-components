@@ -55,7 +55,6 @@
         var today = new Date();
 
         this.$.api.getResumeBot(function(err, res) {
-        	
         	if(res) {
             self.CDs = Object.keys(res.cooldowns).map(function(key) {
             	var timeEndCD = new Date(res.cooldowns[key].next_time_available);
@@ -63,7 +62,7 @@
             	if (totalTime > 0) {
                 var percent = ((totalTime / 60000) * 100).toFixed(0);
                 var time_left = (totalTime / 1000).toFixed(0) + 's';
-                
+
             		return {k: res.cooldowns[key].action, v: percent, p: time_left};
             	}
             });
