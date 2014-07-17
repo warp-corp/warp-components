@@ -106,7 +106,25 @@
       },
 
     	domReady: function() {
-    		this.fetchStatsBot.bind(this)
+    		var self = this;
+    		
+    		this.$.api.addEventListener('warp-bot-resume', function(e) { 
+        	self.integrity = e.detail.bot.integrity;
+          self.maxActions = e.detail.bot.max_actions;
+          self.cpus = e.detail.bot.cpus;
+          self.hp = e.detail.bot.hp;
+          self.maxHP = e.detail.bot.max_hp;
+          self.ram = e.detail.bot.ram;
+          self.armory = e.detail.bot.armoring;
+          self.maxSlots = e.detail.bot.max_slots;
+          self.maxCargo = e.detail.bot.max_cargo;
+
+          self.secteur.x = e.detail.bot.sector.x;
+          self.secteur.y = e.detail.bot.sector.y;
+          self.secteur.type = e.detail.bot.sector.type;
+        	
+        });
+        
         setInterval(this.fetchStatsBot.bind(this), this.interval);
       },
 
