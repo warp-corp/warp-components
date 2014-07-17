@@ -23,6 +23,13 @@
 		      </div>
 		      <div class="panel-body">
 		        <form class="form-horizontal" role="form">
+		        	<div class="row {{ {hidden: !alert.hidden} }}">
+		        		<div class="col-md-12">
+		        			<div class="alert alert-danger">
+		        				{{alert.message}}
+		        			</div>
+		        		</div>
+		        	</div>
 		          <div class="row">
 		          	<div class="col-md-4">
 		          		<button type="button" data-name-action="move" data-move-dir="NW" class="btn btn-default btn-block" on-click="{{MoveClickHandler}}">NW</button>
@@ -69,11 +76,14 @@
 						</div>
 					</div>
 					<div class="col-md-12">
-						<div class="progress">
-	            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-	            {{nameAction}}
-	            </div>
-	          </div>
+						 <template repeat="{{s in CDs}}">
+                {{s.k}}
+                <div class="progress">
+                  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{s.p}}" aria-valuemin="0" aria-valuemax="60" style="width: {{s.p}}%">
+                  {{s.p}}%
+                  </div>
+		            </div>
+		          </template>
 					</div>
 				</div>
 			</div>
@@ -84,23 +94,73 @@
     Polymer({
     	
     	endpoint: '',
-
+    	nameAction: '',
     	CDs: [],
 
     	ready: function() {
-        
+    		this.alert = {
+          hidden: true,
+          type: 'danger',
+          message: ''
+        };
+        setInterval(this.cooldown_watcher.bind(this), 200);
       },
 
       MoveClickHandler: function(event, detail, sender) {
         var self = this;
         var dir = sender.dataset.moveDir;
-        
+        var today = new Date();
+
+     		self.nameAction = "move";
+
         this.$.api.move("move", dir, function(err, res) {
-          console.log(res);
+          if (err) {
+          	console.log(err);
+          } else {          	
+          	if (res.error) {
+          		self.alert.message = res.error.message;
+          		self.alert.hidden = false;
+          	} else {
+          		var CDtime = res.cooldown;
+	          	var end_cooldown = new Date(today.getTime() + CDtime);
+	          	
+	          	self.cooldown_watcher(CDtime);
+							
+							self.CDs.push({
+								k: self.nameAction, 
+								end: end_cooldown, 
+								v: CDtime, 
+								p: 100
+							});
+          	}
+          }
         });
 
       },
 
+      cooldown_watcher: function() {
+      	var self = this;
+      	var time = new Date();
+      			time = time.getTime();
+
+      	self.CDs.forEach(function(obj) {
+      		var lapse_time = obj.end.getTime() - time;
+      		var time_left = obj.v - lapse_time;
+
+      		if (time < obj.end.getTime()) {
+      			var percent = Math.abs((lapse_time / obj.v) * 100);
+      			obj.p = percent.toFixed(0);
+      		} else {
+      			// depiler du tableau
+      			// TODO
+      			var index = self.CDs.indexOf(obj);
+      			if (index >= 0) {
+      				self.CDs.splice(index, 1);
+      			}
+      		}
+      	})
+
+      }
 
     });
   </script>
