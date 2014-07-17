@@ -1,0 +1,82 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-bot-actionsBar" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+		
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+		      <div class="panel-heading">
+		        <h3 class="panel-title"><i class="fa fa-compass"></i> Move</h3>
+		      </div>
+		      <div class="panel-body">
+		        <form class="form-horizontal" role="form">
+		          <div class="row">
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">NW</button>
+		          	</div>
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">N</button>
+		          	</div>
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">NE</button>
+		          	</div>
+		          </div>
+		          <div class="row">
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">W</button>
+		          	</div>
+		          	<div class="col-md-4">
+		          		
+		          	</div>
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">E</button>
+		          	</div>
+		          </div>
+		          <div class="row">
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">SW</button>
+		          	</div>
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">S</button>
+		          	</div>
+		          	<div class="col-md-4">
+		          		<button class="btn btn-default btn-block">SE</button>
+		          	</div>
+		          </div>
+		        </form>
+		      </div>
+		    </div>
+			</div>
+			<div class="col-md-8">
+				<div class="well">
+					<button class="btn btn-default"><i class="fa fa-crosshairs fa-fw"></i> Fight</button>
+					<button class="btn btn-default"><i class="fa fa-bullseye fa-fw"></i> ScanBot</button>
+				</div>
+			</div>
+		</div>
+
+	</template>
+	<script>
+    Polymer({
+    	
+    	endpoint: '',
+
+    	ready: function() {
+        
+      }
+    });
+  </script>
+</polymer-element>
