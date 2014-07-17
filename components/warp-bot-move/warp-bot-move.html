@@ -87,6 +87,9 @@
           if (err) {
           	self.alert.message = err.error.message;
           	self.alert.hidden = false;
+          } else {
+            self.alert.message = '';
+            self.alert.hidden = true;
           }
         });
 
