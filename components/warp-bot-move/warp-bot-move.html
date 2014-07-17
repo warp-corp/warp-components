@@ -1,0 +1,97 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-bot-move" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+
+		<div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-compass"></i> Move</h3>
+      </div>
+      <div class="panel-body">
+        <form class="form-horizontal" role="form">
+        	<div class="row ">
+        		<div class="col-md-12">
+        			<div class="alert {{ {hidden: alert.hidden} | tokenList }} alert-danger">
+        				{{alert.message}}
+        			</div>
+        		</div>
+        	</div>
+          <div class="row">
+          	<div class="col-md-4">
+          		<button type="button" data-name-action="move" data-move-dir="NW" class="btn btn-default btn-block" on-click="{{MoveClickHandler}}">NW</button>
+          	</div>
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="N" on-click="{{MoveClickHandler}}">N</button>
+          	</div>
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="NE" on-click="{{MoveClickHandler}}">NE</button>
+          	</div>
+          </div>
+          <div class="row">
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="W" on-click="{{MoveClickHandler}}">W</button>
+          	</div>
+          	<div class="col-md-4 text-center">
+          		<i class="fa fa-compass fa-3x"></i>
+          	</div>
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="E" on-click="{{MoveClickHandler}}">E</button>
+          	</div>
+          </div>
+          <div class="row">
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="SW" on-click="{{MoveClickHandler}}">SW</button>
+          	</div>
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="S" on-click="{{MoveClickHandler}}">S</button>
+          	</div>
+          	<div class="col-md-4">
+          		<button type="button" class="btn btn-default btn-block" data-name-action="move" data-move-dir="SE" on-click="{{MoveClickHandler}}">SE</button>
+          	</div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+	</template>
+	<script>
+    Polymer({
+    	
+    	endpoint: '',
+
+    	ready: function() {
+    		this.alert = {
+          hidden: true,
+          type: 'danger',
+          message: ''
+        };
+      },
+
+      MoveClickHandler: function(event, detail, sender) {
+        var self = this;
+        var dir = sender.dataset.moveDir;
+
+        this.$.api.move("move", dir, function(err, res) {
+          if (err) {
+          	self.alert.message = err.error.message;
+          	self.alert.hidden = false;
+          }
+        });
+
+      }
+
+    });
+  </script>
+</polymer-element>

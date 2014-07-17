@@ -11,7 +11,8 @@
     <core-xhr id="xhr"></core-xhr>
     <core-signals id="signals"
       on-core-signal-warp-login="{{_loginSignalHandler}}"
-      on-core-signal-warp-logout="{{_logoutSignalHandler}}">
+      on-core-signal-warp-logout="{{_logoutSignalHandler}}"
+      on-core-signal-warp-cooldowns="{{_cooldownWatcherHandler}}">
     </core-signals>
   </template>
   <script>
@@ -19,6 +20,7 @@
 
       var _password;
       var _name;
+      var _CDs;
 
       Polymer({
 
@@ -82,7 +84,33 @@
               }
             }
           };
-          this._post(opts, cb.bind(null, null));
+          var self = this;
+          this._post(opts, function(res) {
+            if(res && !('error' in res)) {
+              var today = new Date();
+              var CDtime = res.cooldown;
+              var end_cooldown = new Date(today.getTime() + CDtime);
+
+              var data = {
+                k: res.action, 
+                end: end_cooldown, 
+                v: CDtime, 
+                p: 100,
+                tl: CDtime
+              };
+
+              self.fire('core-signal', {
+                name: 'warp-cooldowns',
+                data: {
+                  CDs: data
+                }
+              });
+
+              return cb(null, res);
+            } else {
+              return cb(res)
+            }
+          });
           return this;
         },
 
@@ -136,6 +164,10 @@
           _name = null;
           _password = null;
           this.fire('warp-logout');
+        },
+
+        _cooldownWatcherHandler: function(evt, data) {
+          this.fire('warp-cooldowns', {cds: data.CDs});
         }
 
       });

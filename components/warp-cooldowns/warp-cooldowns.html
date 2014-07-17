@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-cooldowns" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+		
+			<div class="panel panel-default">
+	      <div class="panel-heading">
+	        <h3 class="panel-title"><i class="fa fa-cogs"></i> Cooldowns</h3>
+	      </div>
+
+					<ul class="list-group">
+						<template repeat="{{s in CDs}}">
+							<li class="list-group-item">
+								<span class="badge">{{s.lt}}s</span>
+    						{{s.k}}
+                <div class="progress">
+                  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="{{s.p}}" aria-valuemin="0" aria-valuemax="60" style="width: {{s.p}}%">
+                  </div>
+		            </div>
+		          </li>
+		        </template>
+					</ul>
+			</div>
+		</div>
+	</template>
+	<script>
+    Polymer({
+    	
+    	endpoint: '',
+    	nameAction: '',
+    	CDs: [],
+
+      domReady: function() {
+      	var self = this;
+      	
+      	this.$.api.addEventListener('warp-cooldowns', function(e) { 
+        	self.CDs.push(e.detail.cds);
+        });
+
+        setInterval(this.cooldown_watcher.bind(this), 200);
+
+      },
+
+      cooldown_watcher: function() {
+      	var self = this;
+      	var time = new Date();
+      			time = time.getTime();
+
+      	self.CDs.forEach(function(obj) {
+      		var lapse_time = obj.end.getTime() - time;
+      		var time_left = obj.v - lapse_time;
+
+      		if (time < obj.end.getTime()) {
+      			var percent = Math.abs((lapse_time / obj.v) * 100);
+
+      			obj.lt = (lapse_time / 1000).toFixed(0);
+      			obj.p = percent.toFixed(0);
+      		} else {
+      			// depiler du tableau
+      			// TODO
+      			var index = self.CDs.indexOf(obj);
+      			if (index >= 0) {
+      				self.CDs.splice(index, 1);
+      			}
+      		}
+      	})
+
+      }
+
+    });
+  </script>
+</polymer-element>

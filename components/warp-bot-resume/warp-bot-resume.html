@@ -105,7 +105,8 @@
       	type: 'portal'
       },
 
-    	ready: function() {
+    	domReady: function() {
+    		this.fetchStatsBot.bind(this)
         setInterval(this.fetchStatsBot.bind(this), this.interval);
       },
 
