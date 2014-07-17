@@ -72,6 +72,20 @@
           return this;
         },
 
+        move: function(name, data, cb) {
+          var opts = {
+            service: '/bot/actions',
+            data: {
+              name: name,
+              params: {
+                dir: data
+              }
+            }
+          };
+          this._post(opts, cb.bind(null, null));
+          return this;
+        },
+
         getGameStatus: function(cb) {
           this._get({service: '/'}, cb.bind(null, null));
           return this;
