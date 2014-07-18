@@ -37,7 +37,7 @@
               </div>
               
               <div class="col-md-4">
-                <warp-bot-resume endpoint="{{endpoint}}" interval="10000"></warp-bot-resume>
+                <warp-bot-resume endpoint="{{endpoint}}"></warp-bot-resume>
               </div>
               
               <div class="col-md-4">
@@ -81,8 +81,8 @@
       (function() {
         var main = document.getElementById('main');
         // Permet d'injecter l'URL du serveur à tous les composants de l'UI via data-binding
-        main.endpoint = 'http://api.dev.warp-corp.net';
-        //main.endpoint = 'http://localhost:8080';
+        //main.endpoint = 'http://api.dev.warp-corp.net';
+        main.endpoint = 'http://localhost:8080';
       }())
     </script>
 

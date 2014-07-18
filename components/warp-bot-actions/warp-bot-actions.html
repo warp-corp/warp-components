@@ -1,0 +1,109 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-bot-actions" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}" 
+      on-warp-login={{_warpLoginHandler}} 
+      on-warp-action={{_warpActionHandler}}>
+    </warp-api>
+
+		<div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-flash"></i> Actions</h3>
+      </div>
+      <div class="panel-body">
+        <div class="row ">
+          <div class="col-md-12">
+            <br />
+            <div class="{{ {hidden: alert.hidden} | tokenList }} text-{{alert.type}}">
+              {{alert.message}}
+            </div>
+          </div>
+        </div>
+
+        <template repeat="{{action in actions}}">
+          <button class="btn btn-default" 
+                  data-name-action="{{action}}"
+                  on-click="{{ActionClickHandler}}"
+          >
+            {{ action }}
+          </button>
+        </template>
+      </div>
+	  </div>
+	</template>
+	<script>
+    Polymer({
+      
+      endpoint: '',
+      actions: [],
+
+      ready: function() {
+        
+        this.alert = {
+          hidden: true,
+          type: 'info',
+          message: ''
+        };
+
+      },
+
+      domReady: function() {
+      	var self = this;
+
+      },
+
+      ActionClickHandler: function(event, detail, sender) {
+        var name = sender.dataset.nameAction;
+
+        this.$.api.doAction(name, function(err, res) {
+          if (err) {
+            self.alert.message = err.error.message;
+            self.alert.hidden = false;
+          } else {
+            self.alert.message = '';
+            self.alert.hidden = true;
+          }
+        });
+
+        console.log(name);
+      },
+
+      /**
+       * Permet de récupérer les actions disponible pour le bot
+       */
+      fetchEnableActions: function() {
+        var self = this;
+
+        this.$.api.getBot(function(err, res) {
+          if(res) {
+            // afficher la liste des actions autorisées
+            // TODO            
+            self.actions = res.available_actions;
+          }
+        });
+
+      },
+
+      _warpLoginHandler: function() {
+        this.fetchEnableActions();
+      },
+
+      _warpActionHandler: function(evt, data) {
+        this.fetchEnableActions();
+      }
+
+    });
+  </script>
+</polymer-element>
