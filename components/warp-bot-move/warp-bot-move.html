@@ -68,7 +68,7 @@
 	</template>
 	<script>
     Polymer({
-    	
+
     	endpoint: '',
 
     	ready: function() {
@@ -83,7 +83,7 @@
         var self = this;
         var dir = sender.dataset.moveDir;
 
-        this.$.api.move("move", dir, function(err, res) {
+        this.$.api.doAction("move", {dir: dir}, function(err, res) {
           if (err) {
           	self.alert.message = err.error.message;
           	self.alert.hidden = false;

@@ -13,7 +13,9 @@
         display: none;
       }
     </style>
-		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+		<warp-api id="api" endpoint="{{endpoint}}"
+			on-warp-login={{_warpLoginHandler}}>
+		</warp-api>
 
 		<div class="panel panel-default">
 	      <div class="panel-heading">
@@ -38,7 +40,7 @@
           				<strong>{{armory}}</strong>
           			</div>
           			<div class="panel-footer text-center">
-          				<small>Armure</small>
+          				<small>Blindage</small>
           			</div>
           		</div>
           	</div>
@@ -98,7 +100,7 @@
 	</template>
 	<script>
     Polymer({
-    	
+
     	endpoint: '',
       interval: 30*1000, // Toutes les 30s (developpement)
 
@@ -118,32 +120,14 @@
       	type: 'portal'
       },
 
-    	domReady: function() {
+    	ready: function() {
     		var self = this;
-    		
-    		this.$.api.addEventListener('warp-bot-resume', function(e) { 
-        	self.integrity = e.detail.bot.integrity;
-          self.maxActions = e.detail.bot.max_actions;
-          self.cpus = e.detail.bot.cpus;
-          self.hp = e.detail.bot.hp;
-          self.maxHP = e.detail.bot.max_hp;
-          self.ram = e.detail.bot.ram;
-          self.armory = e.detail.bot.armoring;
-          self.maxSlots = e.detail.bot.max_slots;
-          self.maxCargo = e.detail.bot.max_cargo;
-
-          self.secteur.x = e.detail.bot.sector.x;
-          self.secteur.y = e.detail.bot.sector.y;
-          self.secteur.type = e.detail.bot.sector.type;
-        	
-        });
-        
         setInterval(this.fetchStatsBot.bind(this), this.interval);
       },
 
       fetchStatsBot: function() {
         var self = this;
-        this.$.api.getResumeBot(function(err, res) {
+        this.$.api.getBot(function(err, res) {
         	if(res) {
             self.integrity = res.integrity;
             self.maxActions = res.max_actions;
@@ -160,7 +144,12 @@
             self.secteur.type = res.sector.type;
           }
       	});
-      }
+      },
+
+			_warpLoginHandler: function() {
+				this.fetchStatsBot();
+			}
+
     });
   </script>
 </polymer-element>

@@ -14,7 +14,7 @@
       }
     </style>
 		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
-		
+
 			<div class="panel panel-default">
 	      <div class="panel-heading">
 	        <h3 class="panel-title"><i class="fa fa-bullseye"></i> ScanBot</h3>
@@ -76,12 +76,12 @@
 
       domReady: function() {
       	var self = this;
-      	
-      	this.$.api.addEventListener('warp-bot-scanbot', function(e) { 
+
+      	this.$.api.addEventListener('warp-bot-scanbot', function(e) {
           self.alert.message = e.detail.bots.length + " bot(s) trouvé.";
           self.alert.hidden = false;
           var resBots = e.detail.bots.bots;
-          
+
           self.bots = resBots.bots;
         });
 
@@ -90,7 +90,7 @@
       ScanBotClickHandler: function(event, detail, sender) {
         var self = this;
 
-        this.$.api.actionsWithoutParams("scanbot", function(err, res) {
+        this.$.api.doAction("scanbot", function(err, res) {
           if (err) {
             self.alert.message = err.error.message;
             self.alert.type = 'danger';

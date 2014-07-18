@@ -1,7 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/core-ajax/core-xhr.html">
 <link rel="import" href="../../bower_components/core-signals/core-signals.html">
-<polymer-element name="warp-api" attributes="endpoint">
+<polymer-element name="warp-api" attributes="endpoint"
+  on-warp-login={{_warpLoginHandler}}
+  on-warp-logout={{_warpLogoutHandler}}>
   <template>
     <style>
       :host {
@@ -10,8 +12,7 @@
     </style>
     <core-xhr id="xhr"></core-xhr>
     <core-signals id="signals"
-      on-core-signal-warp-login="{{_loginSignalHandler}}"
-      on-core-signal-warp-logout="{{_logoutSignalHandler}}"
+      on-core-signal-warp-api-broadcast="{{_warpApiBroadcastHandler}}"
       on-core-signal-warp-cooldowns="{{_cooldownWatcherHandler}}"
       on-core-signal-warp-bot-resume="{{_botResumeHandler}}"
       on-core-signal-warp-bot-scanbot="{{_actionWithoutParamsHandler}}">
@@ -48,123 +49,75 @@
         logout: function() {
           _name = null;
           _password = null;
-          this.fire('warp-logout');
-          this.fire('core-signal', {name: 'warp-logout'});
+          this._broadcast('warp-logout');
           return this;
         },
 
         login: function(name, password, cb) {
+
           _name = name;
           _password = password;
-          var self = this;
-          this._get({service: '/account'}, function(res) {
-            if(res && !('error' in res)) {
-              self.fire('warp-login');
-              self.fire('core-signal', {
-                name: 'warp-login',
-                data: {
-                  name: name,
-                  password: password
-                }
-              });
 
-              self._get({service: '/bot'}, function(res) {
-                self.fire('core-signal', {
-                  name: 'warp-bot-resume',
-                  data: res
-                });
+          var self = this;
+
+          this._get({service: '/account'}, function(res) {
+
+            if(res && !('error' in res)) {
+
+              self._broadcast('warp-login', {
+                name: name,
+                password: password
               });
 
               return cb(null, res);
+
             } else {
+
               self.logout();
+
               return cb(res.error)
+
             }
+
           });
+
           return this;
+
         },
 
-        move: function(name, data, cb) {
-          var opts = {
+        doAction: function(name, params, cb) {
+
+          // Si pas de params
+          if(arguments.length === 2) {
+            cb = arguments[arguments.length-1];
+            params = undefined;
+          }
+
+          var reqOpts = {
             service: '/bot/actions',
             data: {
               name: name,
-              params: {
-                dir: data
-              }
+              params: params
             }
           };
+
           var self = this;
-          this._post(opts, function(res) {
+
+          this._post(reqOpts, function(res) {
             if(res && !('error' in res)) {
-              var today = new Date();
-              var CDtime = res.cooldown;
-              var end_cooldown = new Date(today.getTime() + CDtime);
 
-              var data = {
-                k: res.action, 
-                end: end_cooldown, 
-                v: CDtime, 
-                p: 100,
-                tl: CDtime
-              };
-
-              self.fire('core-signal', {
-                name: 'warp-cooldowns',
-                data: {
-                  CDs: data
-                }
-              });
-
+              self._broadcast('warp-action', res);
               return cb(null, res);
+
             } else {
-              return cb(res)
+
+              return cb(res);
+
             }
+
           });
+
           return this;
-        },
-
-        actionsWithoutParams: function(name, cb) {
-          var self = this;
-          var opts = {
-            service: '/bot/actions',
-            data: {
-              name: name
-            }
-          };
-          this._post(opts, function(res) {
-            if(res && !('error' in res)) {
-              var today = new Date();
-              var CDtime = res.cooldown;
-              var end_cooldown = new Date(today.getTime() + CDtime);
-
-              var data = {
-                k: res.action, 
-                end: end_cooldown, 
-                v: CDtime, 
-                p: 100,
-                tl: CDtime
-              };
-
-              self.fire('core-signal', {
-                name: 'warp-cooldowns',
-                data: {
-                  CDs: data
-                }
-              });
-
-              self.fire('core-signal', {
-                name: 'warp-bot-scanbot',
-                data: {
-                  bots: res.results
-                }
-              });
-
-              return cb(null, res);
-            } else {
-              return cb(res)
-            }
-          });
         },
 
         getGameStatus: function(cb) {
@@ -172,7 +125,7 @@
           return this;
         },
 
-        getResumeBot: function(cb) {
+        getBot: function(cb) {
           this._get({service: '/bot'}, cb.bind(null, null));
           return this;
         },
@@ -207,28 +160,32 @@
           return this;
         },
 
-        _loginSignalHandler: function(evt, data) {
+        _broadcast: function(name, data) {
+          this.asyncFire(name, data);
+          this.asyncFire('core-signal', {
+            name: 'warp-api-broadcast',
+            data: {
+              name: name,
+              origin: this,
+              payload: data
+            }
+          });
+        },
+
+        _warpApiBroadcastHandler: function(evt, data) {
+          if(data.origin !== this) {
+            this.asyncFire(data.name, data.payload);
+          }
+        },
+
+        _warpLoginHandler: function(evt, data) {
           _name = data.name;
           _password = data.password;
-          this.fire('warp-login');
         },
 
-        _logoutSignalHandler: function() {
+        _warpLogoutHandler: function() {
           _name = null;
           _password = null;
-          this.fire('warp-logout');
-        },
-
-        _cooldownWatcherHandler: function(evt, data) {
-          this.fire('warp-cooldowns', {cds: data.CDs});
-        },
-
-        _botResumeHandler: function(evt, data) {
-          this.fire('warp-bot-resume', {bot: data});
-        },
-
-        _actionWithoutParamsHandler: function(evt, data) {
-          this.fire('warp-bot-scanbot', {bots: data});
         }
 
       });
