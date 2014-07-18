@@ -20,66 +20,79 @@
 	        <h3 class="panel-title"><i class="fa fa-cog"></i> Bot resume</h3>
 	      </div>
 	      <div class="panel-body">
-	        <form class="form-horizontal" role="form">
-              <div class="row">
-	              <div class="col-sm-12">
-	              	<div class="progress">
-									  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{integrity}}" aria-valuemin="0" aria-valuemax="100" style="width: {{integrity}}%">
-									    HP {{integrity}}%
-									  </div>
-									</div>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">Armure</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{armory}}</p>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">Max. actions</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{maxActions}}</p>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">CPUs</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{cpus}}</p>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">RAM</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{ram}}Mo</p>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">Max. slots</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{maxSlots}}</p>
-	              </div>
-	            </div>
-	            <div class="row">
-	              <label class="col-sm-5 control-label stat-label">Max. cargo</label>
-	              <div class="col-sm-7">
-	                <p class="form-control-static">{{maxCargo}}</p>
-	              </div>
-	            </div>
-	            <hr>
-		          <div class="row">
-		            <label class="col-sm-5 control-label stat-label">Position</label>
-		            <div class="col-sm-7">
-		              <p class="form-control-static">[{{secteur.x}} , {{secteur.y}}]</p>
-		            </div>
-		          </div>
-		          <div class="row">
-		            <label class="col-sm-5 control-label stat-label">Type secteur</label>
-		            <div class="col-sm-7">
-		              <p class="form-control-static">{{secteur.type}}</p>
-		            </div>
-		          </div>
-	        </form>
+
+          <div class="row">
+            <div class="col-sm-12">
+            	<div class="progress">
+							  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{integrity}}" aria-valuemin="0" aria-valuemax="100" style="width: {{integrity}}%">
+							    HP {{integrity}}%
+							  </div>
+							</div>
+            </div>
+          </div>
+
+          <div class="row">
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{armory}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>Armure</small>
+          			</div>
+          		</div>
+          	</div>
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{cpus}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>CPUs</small>
+          			</div>
+          		</div>
+          	</div>
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{ram}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>RAM (Mo)</small>
+          			</div>
+          		</div>
+          	</div>
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{maxSlots}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>Slots</small>
+          			</div>
+          		</div>
+          	</div>
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{maxCargo}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>Cargaison</small>
+          			</div>
+          		</div>
+          	</div>
+          	<div class="col-md-4">
+          		<div class="panel panel-default">
+          			<div class="panel-body text-center">
+          				<strong>{{maxActions}}</strong>
+          			</div>
+          			<div class="panel-footer text-center">
+          				<small>Actions</small>
+          			</div>
+          		</div>
+          	</div>
+          </div>
 	      </div>
 	    </div>
 	</template>
