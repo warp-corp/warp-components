@@ -1,0 +1,109 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+
+<polymer-element name="warp-bot-scanbot" attributes="endpoint">
+	<template>
+		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host .hidden'; }
+      ::content .hidden {
+        display: none;
+      }
+    </style>
+		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+		
+			<div class="panel panel-default">
+	      <div class="panel-heading">
+	        <h3 class="panel-title"><i class="fa fa-bullseye"></i> ScanBot</h3>
+	      </div>
+        <div class="panel-body">
+          <button type="button" class="btn btn-default btn-block" on-click="{{ScanBotClickHandler}}">Scan this sector</button>
+          <div class="row ">
+            <div class="col-md-12">
+              <br />
+              <div class="{{ {hidden: alert.hidden} | tokenList }} text-{{alert.type}}">
+                {{alert.message}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <ul class="list-group">
+          <template repeat="{{bot in bots}}">
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{bot.integrity}}" aria-valuemin="0" aria-valuemax="60" style="width: {{bot.integrity}}%">
+                    HP {{bot.integrity}}%
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <i class="fa fa-shield"></i> {{bot.armoring}}
+                </div>
+                <div class="col-md-3">
+                  {{bot.cpus}} Core
+                </div>
+                <div class="col-md-3">
+                  {{bot.ram}}Mo
+                </div>
+                <div class="col-md-3">
+                  <button class="btn btn-danger btn-xs btn-block"><i class="fa fa-rocket"></i></button>
+                </div>
+              </div>
+            </li>
+          </template>
+        </ul>
+		</div>
+	</template>
+	<script>
+    Polymer({
+
+      ready: function() {
+        this.endpoint = '';
+        this.nbBot = 0;
+        this.bots = [];
+        this.alert = {
+          hidden: true,
+          type: 'info',
+          message: ''
+        };
+
+      },
+
+      domReady: function() {
+      	var self = this;
+      	
+      	this.$.api.addEventListener('warp-bot-scanbot', function(e) { 
+          self.alert.message = e.detail.bots.length + " bot(s) trouvé.";
+          self.alert.hidden = false;
+          var resBots = e.detail.bots.bots;
+          
+          self.bots = resBots.bots;
+        });
+
+      },
+
+      ScanBotClickHandler: function(event, detail, sender) {
+        var self = this;
+
+        this.$.api.actionsWithoutParams("scanbot", function(err, res) {
+          if (err) {
+            self.alert.message = err.error.message;
+            self.alert.type = 'danger';
+            self.alert.hidden = false;
+          } else {
+            console.log(res);
+            self.nbBot = res.results.bots.length;
+            self.alert.message = self.nbBot + " bot(s) trouvé(s).";
+            self.alert.hidden = false;
+          }
+        });
+      }
+
+    });
+  </script>
+</polymer-element>

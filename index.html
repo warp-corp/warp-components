@@ -30,9 +30,14 @@
           <!-- Affiché si l'utilisateur est connecté -->
           <warp-loggedin class="col-md-12">
             <div class="row">
-              <warp-bot-move endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-bot-move>
+              <div class="col-md-4">
+                <warp-bot-move endpoint="{{endpoint}}" interval="10000"></warp-bot-move>
+                <warp-bot-scanbot endpoint="{{endpoint}}"></warp-bot-scanbot>
+              </div>
+              
               <warp-cooldowns endpoint="{{endpoint}}" class="col-md-4"></warp-cooldowns>
               <warp-bot-resume endpoint="{{endpoint}}" interval="10000" class="col-md-4"></warp-bot-resume>
+             
             </div>
           </warp-loggedin>
 

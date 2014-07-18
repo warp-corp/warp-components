@@ -13,7 +13,8 @@
       on-core-signal-warp-login="{{_loginSignalHandler}}"
       on-core-signal-warp-logout="{{_logoutSignalHandler}}"
       on-core-signal-warp-cooldowns="{{_cooldownWatcherHandler}}"
-      on-core-signal-warp-bot-resume="{{_botResumeHandler}}">
+      on-core-signal-warp-bot-resume="{{_botResumeHandler}}"
+      on-core-signal-warp-bot-scanbot="{{_actionWithoutParamsHandler}}">
     </core-signals>
   </template>
   <script>
@@ -123,6 +124,49 @@
           return this;
         },
 
+        actionsWithoutParams: function(name, cb) {
+          var self = this;
+          var opts = {
+            service: '/bot/actions',
+            data: {
+              name: name
+            }
+          };
+          this._post(opts, function(res) {
+            if(res && !('error' in res)) {
+              var today = new Date();
+              var CDtime = res.cooldown;
+              var end_cooldown = new Date(today.getTime() + CDtime);
+
+              var data = {
+                k: res.action, 
+                end: end_cooldown, 
+                v: CDtime, 
+                p: 100,
+                tl: CDtime
+              };
+
+              self.fire('core-signal', {
+                name: 'warp-cooldowns',
+                data: {
+                  CDs: data
+                }
+              });
+
+              self.fire('core-signal', {
+                name: 'warp-bot-scanbot',
+                data: {
+                  bots: res.results
+                }
+              });
+
+              return cb(null, res);
+            } else {
+              return cb(res)
+            }
+          });
+        },
+
         getGameStatus: function(cb) {
           this._get({service: '/'}, cb.bind(null, null));
           return this;
@@ -181,6 +225,10 @@
 
         _botResumeHandler: function(evt, data) {
           this.fire('warp-bot-resume', {bot: data});
+        },
+
+        _actionWithoutParamsHandler: function(evt, data) {
+          this.fire('warp-bot-scanbot', {bots: data});
         }
 
       });
