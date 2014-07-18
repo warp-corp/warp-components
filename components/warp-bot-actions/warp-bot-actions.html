@@ -25,7 +25,6 @@
       <div class="panel-body">
         <div class="row ">
           <div class="col-md-12">
-            <br />
             <div class="{{ {hidden: alert.hidden} | tokenList }} text-{{alert.type}}">
               {{alert.message}}
             </div>
@@ -71,9 +70,6 @@
           if (err) {
             self.alert.message = err.error.message;
             self.alert.hidden = false;
-          } else {
-            self.alert.message = '';
-            self.alert.hidden = true;
           }
         });
       },
