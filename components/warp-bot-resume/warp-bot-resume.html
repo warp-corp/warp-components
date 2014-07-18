@@ -14,7 +14,8 @@
       }
     </style>
 		<warp-api id="api" endpoint="{{endpoint}}"
-			on-warp-login={{_warpLoginHandler}}>
+			on-warp-login={{_warpLoginHandler}}
+      on-warp-action={{_warpActionHandler}}>
 		</warp-api>
 
 		<div class="panel panel-default">
@@ -106,7 +107,6 @@
     Polymer({
 
     	endpoint: '',
-      interval: 30*1000, // Toutes les 30s (developpement)
 
       // bot stats
       integrity: 0,
@@ -126,7 +126,7 @@
 
     	ready: function() {
     		var self = this;
-        setInterval(this.fetchStatsBot.bind(this), this.interval);
+        
       },
 
       fetchStatsBot: function() {
@@ -152,7 +152,11 @@
 
 			_warpLoginHandler: function() {
 				this.fetchStatsBot();
-			}
+			},
+
+      _warpActionHandler: function(evt, data) {
+        this.fetchStatsBot();
+      }
 
     });
   </script>
