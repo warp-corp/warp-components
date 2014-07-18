@@ -13,18 +13,18 @@
         display: none;
       }
     </style>
-		<warp-api id="api" endpoint="{{endpoint}}"></warp-api>
+		<warp-api id="api" endpoint="{{endpoint}}"
+      on-warp-action="{{_warpActionHandler}}">
+    </warp-api>
 
 			<div class="panel panel-default">
 	      <div class="panel-heading">
 	        <h3 class="panel-title"><i class="fa fa-bullseye"></i> ScanBot</h3>
 	      </div>
         <div class="panel-body">
-          <button type="button" class="btn btn-default btn-block" on-click="{{ScanBotClickHandler}}">Scan this sector</button>
           <div class="row ">
             <div class="col-md-12">
-              <br />
-              <div class="{{ {hidden: alert.hidden} | tokenList }} text-{{alert.type}}">
+              <div class="alert {{ {hidden: alert.hidden} | tokenList }} alert-{{alert.type}}">
                 {{alert.message}}
               </div>
             </div>
@@ -76,15 +76,6 @@
 
       domReady: function() {
       	var self = this;
-
-      	this.$.api.addEventListener('warp-bot-scanbot', function(e) {
-          self.alert.message = e.detail.bots.length + " bot(s) trouvé.";
-          self.alert.hidden = false;
-          var resBots = e.detail.bots.bots;
-
-          self.bots = resBots.bots;
-        });
-
       },
 
       ScanBotClickHandler: function(event, detail, sender) {
@@ -95,12 +86,21 @@
             self.alert.message = err.error.message;
             self.alert.type = 'danger';
             self.alert.hidden = false;
-          } else {
-            self.nbBot = res.results.bots.length;
-            self.alert.message = self.nbBot + " bot(s) trouvé(s).";
-            self.alert.hidden = false;
           }
         });
+      },
+
+      _warpActionHandler: function(evt, data) {
+        var self = this;
+        if (data.action == "scanbot") {
+          self.alert.message = data.results.bots.length + " bot(s) trouvé.";
+          self.alert.hidden = false;
+          self.bots = data.results.bots;
+        } else {
+          self.bots = [];
+          self.alert.message = '';
+          self.alert.hidden = true;
+        }
       }
 
     });
