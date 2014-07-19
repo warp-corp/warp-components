@@ -106,12 +106,20 @@
         this.loadSectors();
       },
 
+      endpointChanged: function() {
+        this.loadSectors();
+      },
+
+      getStorageKey: function() {
+        return 'warp-sectors-' + this.endpoint;
+      },
+
       loadSectors: function() {
-        this.sectors = JSON.parse(window.localStorage.getItem('warpSectors') || '[]');
+        this.sectors = JSON.parse(window.localStorage.getItem(this.getStorageKey()) || '[]');
       },
 
       saveSectors: function() {
-        window.localStorage.setItem('warpSectors', JSON.stringify(this.sectors));
+        window.localStorage.setItem(this.getStorageKey(), JSON.stringify(this.sectors));
       },
 
       updateSector: function(sector) {
