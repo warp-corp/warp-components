@@ -3,7 +3,6 @@
 
 <polymer-element name="warp-bot-actions" attributes="endpoint">
 	<template>
-		<link rel="stylesheet" type="text/css" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
     <style>
       :host {
         display: block;
@@ -13,8 +12,8 @@
         display: none;
       }
     </style>
-		<warp-api id="api" endpoint="{{endpoint}}" 
-      on-warp-login={{_warpLoginHandler}} 
+		<warp-api id="api" endpoint="{{endpoint}}"
+      on-warp-login={{_warpLoginHandler}}
       on-warp-action={{_warpActionHandler}}>
     </warp-api>
 
@@ -32,7 +31,7 @@
         </div>
 
         <template repeat="{{action in actions}}">
-          <button class="btn btn-default" 
+          <button class="btn btn-default"
                   data-name-action="{{action}}"
                   on-click="{{ActionClickHandler}}"
           >
@@ -44,12 +43,12 @@
 	</template>
 	<script>
     Polymer({
-      
+
       endpoint: '',
       actions: [],
 
       ready: function() {
-        
+
         this.alert = {
           hidden: true,
           type: 'info',
@@ -83,7 +82,7 @@
         this.$.api.getBot(function(err, res) {
           if(res) {
             // afficher la liste des actions autorisées
-            // TODO            
+            // TODO
             self.actions = res.available_actions;
           }
         });
