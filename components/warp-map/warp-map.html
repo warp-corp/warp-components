@@ -1,0 +1,163 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+<polymer-element name="warp-map" attributes="endpoint">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      polyfill-next-selector { content: ':host #map'; }
+      ::content #map {
+        background-color: black;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector'; }
+      ::content #map > .sector {
+        width: 15px;
+        height: 15px;
+        position: absolute;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.ease'; }
+      ::content #map > .sector.ease {
+        -webkit-transition: left 250ms ease, top 250ms ease;
+        -moz-transition: left 250ms ease, top 250ms ease;
+        -ms-transition: left 250ms ease, top 250ms ease;
+        -o-transition: left 250ms ease, top 250ms ease;
+        transition: left 250ms ease, top 250ms ease;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector:hover'; }
+      ::content #map > .sector:hover {
+        border: 2px dashed #ccc;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.current'; }
+      ::content #map > .sector.current {
+        border: 2px dashed orange;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.swamps'; }
+      ::content #map > .sector.swamps {
+        background-color: #425E41;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.water'; }
+      ::content #map > .sector.water {
+        background-color: blue;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.plains'; }
+      ::content #map > .sector.plains {
+        background-color: green;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.hills'; }
+      ::content #map > .sector.hills {
+        background-color: #4D402D;
+      }
+
+      polyfill-next-selector { content: ':host #map > .sector.mountains'; }
+      ::content #map > .sector.mountains {
+        background-color: white;
+      }
+    </style>
+    <warp-api id="api" endpoint="{{endpoint}}"
+      on-warp-action={{_warpActionHandler}}
+      on-warp-bot-update={{_warpBotUpdateHandler}}>
+    </warp-api>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Warp - Map</h3>
+      </div>
+      <div class="panel-body">
+        <div id="map">
+          <template repeat="{{s in sectors}}">
+            <div class="sector ease {{s.type}} {{ { current: s.x === current.x && s.y == current.y } | tokenList }}"
+              title="{{s | toTooltip}}"
+              style="left: {{s.x * sectorSize - xOffset}}px; top: {{s.y * sectorSize - yOffset}}px">
+            </div>
+          </template>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <i class="fa fa-map-marker"></i> <strong>[</strong>{{current.x}},{{current.y}}<strong>]</strong> {{current.type}}
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      sectorSize: 15,
+      xOffset: 0,
+      yOffset: 0,
+      current: null,
+      sectors: null,
+
+      ready: function() {
+        this.loadSectors();
+      },
+
+      loadSectors: function() {
+        this.sectors = JSON.parse(window.localStorage.getItem('warpSectors') || '[]');
+      },
+
+      saveSectors: function() {
+        window.localStorage.setItem('warpSectors', JSON.stringify(this.sectors));
+      },
+
+      updateSector: function(sector) {
+        var s;
+        var sectors = this.sectors;
+        for(var i = 0, len = sectors.length; i < len; ++i) {
+          s = sectors[i];
+          if(s.x === sector.x && s.y === sector.y) {
+            sectors.splice(i, 1, sector);
+            return;
+          }
+        }
+        sectors.push(sector);
+      },
+
+      centerTo: function(x, y) {
+        var rect = this.$.map.getBoundingClientRect();
+        this.xOffset = x * this.sectorSize - rect.width/2;
+        this.yOffset = y * this.sectorSize - rect.height/2;
+      },
+
+      toTooltip: function(sector) {
+        return Object.keys(sector).map(function(key) {
+          return key + ': ' + sector[key];
+        }).join('\n');
+      },
+
+      updateAndRender: function(sector) {
+        this.current = sector;
+        this.updateSector(sector);
+        this.centerTo(sector.x, sector.y);
+        this.saveSectors();
+      },
+
+      _warpActionHandler: function(evt, data) {
+        if(data.action === 'move') {
+          var sector = data.results;
+          this.updateAndRender(sector);
+        }
+      },
+
+      _warpBotUpdateHandler: function(evt, bot) {
+        var sector = bot.sector;
+        this.updateAndRender(sector);
+      }
+
+    });
+  </script>
+</polymer-element>

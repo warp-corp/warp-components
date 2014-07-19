@@ -126,7 +126,11 @@
         },
 
         getBot: function(cb) {
-          this._get({service: '/bot'}, cb.bind(null, null));
+          var self = this;
+          this._get({service: '/bot'}, function(bot, xhr) {
+            self._broadcast('warp-bot-update', bot);
+            return cb(null, bot);
+          });
           return this;
         },
 
@@ -157,7 +161,6 @@
           opts.responseType = 'json';
           var self = this;
           opts.callback = function(res, xhr) {
-            console.log(xhr.getAllResponseHeaders());
             var responseHeaders = xhr.getAllResponseHeaders()
               .split('\n').reduce(function(obj, h) {
                 var kv = h.split(':');
