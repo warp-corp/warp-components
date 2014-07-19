@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../warp-api/warp-api.html">
+<polymer-element name="warp-console" attributes="endpoint">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      polyfill-next-selector { content: ':host #console'; }
+      ::content #console {
+        background-color: black;
+        overflow-y: auto;
+        color: white;
+        font-family: monospace;
+        width: 100%;
+        border: none;
+        resize:vertical;
+      }
+    </style>
+    <warp-api id="api" endpoint="{{endpoint}}"
+      on-warp-api-request={{_warpApiRequestHandler}}>
+    </warp-api>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Warp - Console</h3>
+      </div>
+      <div class="panel-body">
+        <textarea id="console" rows="10"></textarea>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+
+      printXhr: function(xhr) {
+        var console = this.$.console;
+        var str = '';
+        str += '-> Request: ' + xhr.request.method.toUpperCase() + ' ' + xhr.request.url + '\n';
+        if(xhr.request.params) {
+          str += '+ Params:\n';
+          str += JSON.stringify(xhr.request.params, null, 2) + '\n';
+        }
+        if(xhr.request.body) {
+          str += '+ Body:\n';
+          str += JSON.stringify(xhr.request.body, null, 2) + '\n';
+        }
+        str += '<- Response: ' + xhr.response.status + '\n';
+        if(xhr.response.body) {
+          str += '+ Body:\n';
+          str += JSON.stringify(xhr.response.body, null, 2);
+        }
+        str += '\n';
+        console.value += str + '\n';
+        console.scrollTop = console.scrollHeight - console.clientHeight;
+      },
+
+      _warpApiRequestHandler: function(evt, xhr) {
+        this.printXhr(xhr);
+      }
+
+    });
+  </script>
+</polymer-element>

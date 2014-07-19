@@ -67,7 +67,7 @@
               self._broadcast('warp-login', {
                 name: name,
                 password: password
-              }); 
+              });
 
               return cb(null, res);
 
@@ -155,7 +155,34 @@
           }
           opts.url = this.endpoint + opts.service;
           opts.responseType = 'json';
-          opts.callback = cb;
+          var self = this;
+          opts.callback = function(res, xhr) {
+            console.log(xhr.getAllResponseHeaders());
+            var responseHeaders = xhr.getAllResponseHeaders()
+              .split('\n').reduce(function(obj, h) {
+                var kv = h.split(':');
+                if(kv[0] && kv[1]) obj[kv[0]] = kv[1];
+                return obj;
+              }, {});
+            self._broadcast('warp-api-request', {
+              request: {
+                method: opts.method,
+                url: opts.url,
+                headers: opts.headers,
+                body: opts.data,
+                params: opts.params
+              },
+              response: {
+                status: xhr.status,
+                type: xhr.responseType,
+                headers: responseHeaders,
+                body: res
+              }
+            });
+            if(typeof cb === 'function') {
+              return cb.apply(null, arguments);
+            }
+          };
           this.$.xhr.request(opts);
           return this;
         },
